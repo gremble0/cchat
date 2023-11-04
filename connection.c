@@ -1,5 +1,4 @@
 #include "connection.h"
-#include <stddef.h>
 #include <stdio.h>
 
 int tcp_connect(int port, char *hostname) {
@@ -52,8 +51,11 @@ void *tcp_read(void *params) {
 
 void *tcp_write(void *params) {
     tcp_io_params *p = (tcp_io_params*)params;
+    char buf[BUFSIZE];
 
-    ssize_t write_count = write(p->serverfd, p->buf, strlen(p->buf) + 1);
+    scanf("%s", buf);
+
+    ssize_t write_count = write(p->serverfd, buf, strlen(buf) + 1);
     if (write_count == -1) {
         perror("write");
     }
