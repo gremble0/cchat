@@ -10,4 +10,6 @@
 #define FONT_COLOR                 GetColor(0xccccccff)
 
 void DrawWindow();     /* Main entrypoint to drawing ui elements in the window */
-void DrawNewMessage(); /* Draws a new message onto the screen */
+void DrawNewMessage(); /* Draws a new message onto the screen NOTE: assumes BeginDraw() has been called */
+void DrawBackground(); /* NOTE: assumes BeginDraw() has been called */
+void DrawInputField(); /* NOTE: assumes BeginDraw() has been called */
