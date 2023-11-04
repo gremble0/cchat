@@ -55,16 +55,29 @@ int tcp_read(int serverfd, char *buf, int count) {
     if (read_count == 0) {
         printf("%s:%d Done reading into buffer\n", __FILE__, __LINE__);
         return 0;
-    } 
+    } else if (read_count == -1) {
+        perror("read");
+        return -1;
+    }
 
     return read_count;
 }
 
+int tcp_write(int sockfd, char* buffer, int count) {
+    int write_count = write(sockfd, buffer, count);
+    if (write_count == -1) {
+        perror("write");
+        return -1;
+    }
+
+    return write_count;
+}
+
 int main(int argc, char **argv) {
     int port = 8080;
-    int read_count, server_fd;
+    int read_count, server_fd, write_count;
+    char read_buf[BUFSIZE], write_buf[BUFSIZE];
     char *hostname = "127.0.0.1";
-    char buf[BUFSIZE];
 
     if (argc >= 2)
         port = atoi(argv[1]);
@@ -72,15 +85,17 @@ int main(int argc, char **argv) {
         hostname = argv[2];
 
     server_fd = TcpConnect(port, hostname);
-    printf("%d\n", server_fd);
 
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "gochat");
     SetTargetFPS(60);
 
-    while (!WindowShouldClose()) {
-        DrawWindow();
-        read_count = tcp_read(server_fd, buf, BUFSIZE);
-        printf("%s\n", buf);
+    /* while (!WindowShouldClose()) { */
+    while (1) {
+        /* DrawWindow(); */
+        read_count = tcp_read(server_fd, read_buf, BUFSIZE);
+        printf("%s\n", read_buf);
+        scanf("%s", write_buf);
+        write_count = tcp_write(server_fd, write_buf, BUFSIZE);
     }
 
     return 0;
