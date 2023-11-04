@@ -8,8 +8,8 @@
 #define BUFSIZE 512 /* size of buffer we will read from the server into */
 
 int tcp_connect(int port, char *hostname);
-void *tcp_read(void *params);
-void *tcp_write(void *params);
+int tcp_read(int serverfd, char *buf, int count);
+int tcp_write(int serverfd, char *buf, int count);
 
 typedef struct tcp_io_params {
     int serverfd;

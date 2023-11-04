@@ -36,29 +36,20 @@ int tcp_connect(int port, char *hostname) {
     return serverfd;
 }
 
-void *tcp_read(void *params) {
-    tcp_io_params *p = (tcp_io_params*)params;
-  
-    ssize_t read_count = read(p->serverfd, p->buf, p->count);
-    if (read_count == 0) {
-        printf("%s:%d Done reading into buffer\n", __FILE__, __LINE__);
-    } else if (read_count == -1) {
-        perror("read");
-    }
+int tcp_read(int serverfd, char *buf, int count) {
+    int read_count = read(serverfd, buf, count);
 
-    return (void*)read_count;
+    if (read_count == -1)
+        perror("read");
+
+    return read_count;
 }
 
-void *tcp_write(void *params) {
-    tcp_io_params *p = (tcp_io_params*)params;
-    char buf[BUFSIZE];
+int tcp_write(int serverfd, char *buf, int count) {
+    int write_count = write(serverfd, buf, strlen(buf) + 1);
 
-    scanf("%s", buf);
-
-    ssize_t write_count = write(p->serverfd, buf, strlen(buf) + 1);
-    if (write_count == -1) {
+    if (write_count == -1)
         perror("write");
-    }
 
-    return (void*)write_count;
+    return write_count;
 }
