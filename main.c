@@ -1,7 +1,5 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include <string.h>
 
 #include "ui.h"
 #include "connection.h"
@@ -26,6 +24,8 @@ int main(int argc, char **argv) {
 
     pthread_create(&read_thread,  NULL, tcp_read_thread,  (void*)server_fd);
     pthread_create(&write_thread, NULL, tcp_write_thread, (void*)server_fd);
+
+    DrawWindow();
 
     pthread_join(read_thread,  NULL);
     pthread_join(write_thread, NULL);
