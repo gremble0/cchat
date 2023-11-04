@@ -10,7 +10,6 @@ int tcp_connect(int port, char *hostname) {
         perror("socket");
         return -1;
     }
-    printf("%s:%d Successfully created socket\n", __FILE__, __LINE__);
 
     connwc = inet_pton(AF_INET, hostname, &server_addr);
     if(connwc == 0) {
@@ -31,7 +30,6 @@ int tcp_connect(int port, char *hostname) {
         perror("connect");
         return -1;
     }
-    printf("%s:%d Successfully connected to gochat server!\n", __FILE__, __LINE__);
 
     return serverfd;
 }
@@ -46,10 +44,31 @@ int tcp_read(int serverfd, char *buf, int count) {
 }
 
 int tcp_write(int serverfd, char *buf, int count) {
-    int write_count = write(serverfd, buf, strlen(buf) + 1);
+    int write_count = write(serverfd, buf, count);
 
     if (write_count == -1)
         perror("write");
 
     return write_count;
+}
+
+void *tcp_read_thread(void *args) {
+    ssize_t serverfd = (ssize_t)args;
+    char read_buf[BUFSIZE];
+
+    while (1) {
+        int n = tcp_read(serverfd, read_buf, BUFSIZE);
+        printf("%.*s", n, read_buf);
+    }
+}
+
+void *tcp_write_thread(void *args) {
+    ssize_t serverfd = (ssize_t)args;
+    char    write_buf[BUFSIZE], format[10];
+
+    while (1) {
+        sprintf(format, "%%%ds", BUFSIZE);
+        scanf("%255s", write_buf);
+        tcp_write(serverfd, write_buf, strlen(write_buf) + 1);
+    }
 }
