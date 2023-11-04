@@ -1,4 +1,6 @@
 #include "connection.h"
+#include <stddef.h>
+#include <stdio.h>
 
 int tcp_connect(int port, char *hostname) {
     int serverfd, connwc;
@@ -35,25 +37,26 @@ int tcp_connect(int port, char *hostname) {
     return serverfd;
 }
 
-int tcp_read(int serverfd, char *buf, int count) {
-    int read_count = read(serverfd, buf, count);
+void *tcp_read(void *params) {
+    tcp_io_params *p = (tcp_io_params*)params;
+  
+    ssize_t read_count = read(p->serverfd, p->buf, p->count);
     if (read_count == 0) {
         printf("%s:%d Done reading into buffer\n", __FILE__, __LINE__);
-        return 0;
     } else if (read_count == -1) {
         perror("read");
-        return -1;
     }
 
-    return read_count;
+    return (void*)read_count;
 }
 
-int tcp_write(int sockfd, char* buffer, int count) {
-    int write_count = write(sockfd, buffer, count);
+void *tcp_write(void *params) {
+    tcp_io_params *p = (tcp_io_params*)params;
+
+    ssize_t write_count = write(p->serverfd, p->buf, strlen(p->buf) + 1);
     if (write_count == -1) {
         perror("write");
-        return -1;
     }
 
-    return write_count;
+    return (void*)write_count;
 }
