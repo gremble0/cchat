@@ -14,7 +14,6 @@ void *tcp_read_thread(void *args);                 /* Runs an infinite loop for 
 void *tcp_write_thread(void *args);                /* Runs an infinite loop reading from stdin and sending to the serverfd */
 
 typedef struct tcp_io_params {
-    int serverfd;
+    int  serverfd;
     char *buf;
-    int count;
 } tcp_io_params;

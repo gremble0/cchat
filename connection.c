@@ -52,22 +52,21 @@ int tcp_write(int serverfd, char *buf, int count) {
 }
 
 void *tcp_read_thread(void *args) {
-    ssize_t serverfd = (ssize_t)args;
-    char read_buf[BUFSIZE];
+    tcp_io_params *p = (tcp_io_params*)args;
 
     while (1) {
-        int n = tcp_read(serverfd, read_buf, BUFSIZE);
-        printf("%.*s", n, read_buf);
+        int n = tcp_read(p->serverfd, p->buf, BUFSIZE);
+        printf("%.*s", n, p->buf);
     }
 }
 
 void *tcp_write_thread(void *args) {
-    ssize_t serverfd = (ssize_t)args;
-    char    write_buf[BUFSIZE], format[10];
+    tcp_io_params *p = (tcp_io_params*)args;
+    char format[10];
 
     while (1) {
         sprintf(format, "%%%ds", BUFSIZE);
-        scanf("%255s", write_buf);
-        tcp_write(serverfd, write_buf, strlen(write_buf) + 1);
+        scanf("%255s", p->buf);
+        tcp_write(p->serverfd, p->buf, strlen(p->buf) + 1);
     }
 }
