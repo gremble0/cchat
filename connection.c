@@ -56,7 +56,7 @@ void *tcp_read_messages(void *args) {
 
     while (1) {
         tcp_read(conn->serverfd, conn->messages[conn->messages_len], BUFSIZE);
-        if (conn->messages_len < 10)
+        if (conn->messages_len < 14)
             ++conn->messages_len;
     }
 }

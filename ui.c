@@ -58,7 +58,6 @@ void DrawInputField(connection *conn) {
     if (IsKeyPressed(KEY_ENTER) && conn->write_buf_len != 0) {
         insert_message(conn->messages, conn->write_buf, conn->messages_len);
         tcp_write(conn->serverfd, conn->write_buf, conn->write_buf_len + 1);
-        /* strcpy(conn->messages[conn->messages_len], conn->write_buf); */
 
         if (conn->messages_len < MAX_MESSAGES)
             ++conn->messages_len;
@@ -75,8 +74,8 @@ void DrawInputField(connection *conn) {
 // TODO separate utils file for messages, maybe struct with sender etc.
 void insert_message(char **messages, char *message, int pos) {
     if (pos >= MAX_MESSAGES) {
-        for (int i = 1; i < MAX_MESSAGES - 1; i++)
-            memcpy(messages[i - 1], messages[i], BUFSIZE);
+        for (int i = 0; i < MAX_MESSAGES - 1; i++)
+            memcpy(messages[i], messages[i + 1], BUFSIZE);
 
         memcpy(messages[MAX_MESSAGES - 1], message, BUFSIZE);
     } else {
