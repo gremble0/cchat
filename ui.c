@@ -56,9 +56,13 @@ void DrawInputField(connection *conn) {
     }
 
     if (IsKeyPressed(KEY_ENTER) && conn->write_buf_len != 0) {
-        strcpy(conn->messages[conn->messages_len], conn->write_buf);
-        ++conn->messages_len;
+        insert_message(conn->messages, conn->write_buf, conn->messages_len);
         tcp_write(conn->serverfd, conn->write_buf, conn->write_buf_len + 1);
+        /* strcpy(conn->messages[conn->messages_len], conn->write_buf); */
+
+        if (conn->messages_len < MAX_MESSAGES)
+            ++conn->messages_len;
+
         conn->write_buf[0] = '\0';
         conn->write_buf_len = 0;
     }
@@ -66,4 +70,16 @@ void DrawInputField(connection *conn) {
     DrawRectangleRec(input_field, TERTIARY_BACKGROUND_COLOR);
     DrawRectangleLines((int)input_field.x, (int)input_field.y, (int)input_field.width, (int)input_field.height, GOLD_YELLOW);
     DrawText(conn->write_buf, (int)input_field.x + 5, (int)input_field.y + 8, FONT_SIZE, FONT_COLOR);
+}
+
+// TODO separate utils file for messages, maybe struct with sender etc.
+void insert_message(char **messages, char *message, int pos) {
+    if (pos >= MAX_MESSAGES) {
+        for (int i = 1; i < MAX_MESSAGES - 1; i++)
+            memcpy(messages[i - 1], messages[i], BUFSIZE);
+
+        memcpy(messages[MAX_MESSAGES - 1], message, BUFSIZE);
+    } else {
+        memcpy(messages[pos], message, BUFSIZE);
+    }
 }

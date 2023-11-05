@@ -9,7 +9,7 @@
 #define CHATBOX_HEIGHT 50
 #define FONT_SIZE      18
 
-#define MAX_MESSAGES WINDOW_HEIGHT / CHATBOX_HEIGHT
+#define MAX_MESSAGES (WINDOW_HEIGHT / CHATBOX_HEIGHT - 1)
 
 #define BACKGROUND_COLOR           GetColor(0x151515ff)
 #define SECONDARY_BACKGROUND_COLOR GetColor(0x191919ff)
@@ -20,3 +20,5 @@
 void DrawWindow(connection *p);     /* Main entrypoint to drawing ui elements in the window */
 void DrawInputField(connection *p); /* NOTE: assumes BeginDraw() has been called */
 void DrawBackground();              /* NOTE: assumes BeginDraw() has been called */
+
+void insert_message(char **messages, char *message, int pos);
