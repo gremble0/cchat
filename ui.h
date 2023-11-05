@@ -20,5 +20,3 @@
 void DrawWindow(connection *p);     /* Main entrypoint to drawing ui elements in the window */
 void DrawInputField(connection *p); /* NOTE: assumes BeginDraw() has been called */
 void DrawBackground();              /* NOTE: assumes BeginDraw() has been called */
-
-void insert_message(char **messages, char *message, int pos);
