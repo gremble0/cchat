@@ -1,4 +1,6 @@
 #include "ui.h"
+#include <stdio.h>
+#include <string.h>
 
 void DrawWindow(connection *conn) {
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cchat");
@@ -14,9 +16,8 @@ void DrawWindow(connection *conn) {
         // TODO: inputfield drawing on separate thread?
         DrawInputField(conn);
 
-        for (int i = 0; i < conn->messages_len; ++i) {
+        for (int i = 0; i < conn->messages_len; i++)
             DrawText(conn->messages[i], 10, CHATBOX_HEIGHT * i, FONT_SIZE, GOLD_YELLOW);
-        }
 
         EndDrawing();
     }
@@ -41,7 +42,7 @@ void DrawInputField(connection *conn) {
 
     int key = GetCharPressed();
 
-    while (key > 0) {
+    while (key > 0 && conn->write_buf_len < BUFSIZE + 1) {
         conn->write_buf[conn->write_buf_len] = (char)key;
         conn->write_buf[conn->write_buf_len + 1] = '\0';
         ++conn->write_buf_len;
@@ -55,6 +56,8 @@ void DrawInputField(connection *conn) {
     }
 
     if (IsKeyPressed(KEY_ENTER) && conn->write_buf_len != 0) {
+        strcpy(conn->messages[conn->messages_len], conn->write_buf);
+        ++conn->messages_len;
         tcp_write(conn->serverfd, conn->write_buf, conn->write_buf_len + 1);
         conn->write_buf[0] = '\0';
         conn->write_buf_len = 0;
