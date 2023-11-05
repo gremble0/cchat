@@ -3,11 +3,16 @@ This is the client sister project of [go-chat](https://github.com/gremble0/gocha
 
 ## Dependencies
 - raylib
-- make
-- gcc
+- make (optional)
+- gcc (optional)
 
 ## Quick start
-To connect to the server
-```console
-...
+To connect to the server:
+```shell
+make
+./main #connects to port 8080 locally
+# or
+./main <port> # connects to <port> locally
+# or
+./main <port> <ipv4> # connects to <port> on <ipv4>
 ```

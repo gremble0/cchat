@@ -1,5 +1,9 @@
-CFLAGS=-Wall -Wextra `pkg-config --cflags raylib`
+CC=gcc
+CFLAGS=-Wall -Wextra
 LIBS=`pkg-config --libs raylib`
 
 all:
-	gcc $(CFLAGS) -o main main.c ui.c connection.c $(LIBS)
+	$(CC) $(CFLAGS) -o main main.c ui.c connection.c $(LIBS)
+
+clean:
+	rm -f main
