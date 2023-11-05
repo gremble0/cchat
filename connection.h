@@ -10,10 +10,11 @@
 int tcp_connect(int port, char *hostname);         /* Connects to a TCP server on hostname:port and returns its socket fd*/
 int tcp_read(int serverfd, char *buf, int count);  /* Wrapper function for read() that checks for errors */
 int tcp_write(int serverfd, char *buf, int count); /* Wrapper function for write() that checks for errors */
-void *tcp_read_thread(void *args);                 /* Runs an infinite loop for reading from the serverfd */
-void *tcp_write_thread(void *args);                /* Runs an infinite loop reading from stdin and sending to the serverfd */
+/* void *tcp_read_thread(void *args);                 /\* Runs an infinite loop for reading from the serverfd *\/ */
+/* void *tcp_write_thread(void *args);                /\* Runs an infinite loop reading from stdin and sending to the serverfd *\/ */
 
 typedef struct tcp_io_params {
     int  serverfd;
-    char *buf;
+    char *read_buf;
+    char *write_buf;
 } tcp_io_params;

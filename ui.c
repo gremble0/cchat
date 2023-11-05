@@ -1,17 +1,16 @@
-#include "connection.h"
 #include "ui.h"
 #include <raylib.h>
 #include <stdio.h>
 
-void DrawWindow() {
+void DrawWindow(tcp_io_params *p) {
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cchat");
-    SetTargetFPS(60);
+    SetTargetFPS(10);
 
     while (!WindowShouldClose()) {
         BeginDrawing();
 
         DrawBackground();
-        DrawInputField();
+        DrawInputField(p);
 
         EndDrawing();
     }
@@ -21,11 +20,11 @@ void DrawBackground() {
     ClearBackground(BACKGROUND_COLOR);
 
     for (int i = 0; i < WINDOW_HEIGHT; i += CHATBOX_HEIGHT * 2)
-        DrawRectangle(0, i, WINDOW_WIDTH, CHATBOX_HEIGHT, ALTERNATE_BACKGROUND_COLOR);
+        DrawRectangle(0, i, WINDOW_WIDTH, CHATBOX_HEIGHT, SECONDARY_BACKGROUND_COLOR);
 }
 
-void DrawInputField() {
-    static char input[BUFSIZE] = "\0";
+void DrawInputField(tcp_io_params *p) {
+    /* static char input[BUFSIZE] = "\0"; */
     static int letter_count = 0;
 
     Rectangle input_field = {
@@ -38,8 +37,8 @@ void DrawInputField() {
     int key = GetCharPressed();
 
     while (key > 0) {
-        input[letter_count] = (char)key;
-        input[letter_count + 1] = '\0';
+        p->write_buf[letter_count] = (char)key;
+        p->write_buf[letter_count + 1] = '\0';
         ++letter_count;
 
         key = GetCharPressed();
@@ -49,15 +48,19 @@ void DrawInputField() {
         --letter_count;
         if (letter_count < 0)
             letter_count = 0;
-        input[letter_count] = '\0';
+        p->write_buf[letter_count] = '\0';
     }
 
-    DrawRectangleRec(input_field, LIGHTGRAY);
+    if (IsKeyPressed(KEY_ENTER)) {
+        tcp_write(p->serverfd, p->write_buf, strlen(p->write_buf) + 1);
+        p->write_buf = "";
+    }
 
-    DrawRectangleLines((int)input_field.x, (int)input_field.y, (int)input_field.width, (int)input_field.height, RED);
+    DrawRectangleRec(input_field, TERTIARY_BACKGROUND_COLOR);
 
-    DrawText(input, (int)input_field.x + 5, (int)input_field.y + 8, 40, MAROON);
-    /* DrawText(TextFormat(const char *text, ...), int posX, int posY, int fontSize, Color color) */
+    DrawRectangleLines((int)input_field.x, (int)input_field.y, (int)input_field.width, (int)input_field.height, GOLD_YELLOW);
+
+    DrawText(p->write_buf, (int)input_field.x + 5, (int)input_field.y + 8, 40, FONT_COLOR);
 }
 
 void DrawNewMessage() {
