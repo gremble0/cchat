@@ -1,6 +1,4 @@
 #include "ui.h"
-#include <stdio.h>
-#include <string.h>
 
 void DrawWindow(connection *conn) {
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cchat");
@@ -69,16 +67,4 @@ void DrawInputField(connection *conn) {
     DrawRectangleRec(input_field, TERTIARY_BACKGROUND_COLOR);
     DrawRectangleLines((int)input_field.x, (int)input_field.y, (int)input_field.width, (int)input_field.height, GOLD_YELLOW);
     DrawText(conn->write_buf, (int)input_field.x + 5, (int)input_field.y + 8, FONT_SIZE, FONT_COLOR);
-}
-
-// TODO separate utils file for messages, maybe struct with sender etc.
-void insert_message(char **messages, char *message, int pos) {
-    if (pos >= MAX_MESSAGES) {
-        for (int i = 0; i < MAX_MESSAGES - 1; i++)
-            memcpy(messages[i], messages[i + 1], BUFSIZE);
-
-        memcpy(messages[MAX_MESSAGES - 1], message, BUFSIZE);
-    } else {
-        memcpy(messages[pos], message, BUFSIZE);
-    }
 }

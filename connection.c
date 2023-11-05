@@ -56,7 +56,18 @@ void *tcp_read_messages(void *args) {
 
     while (1) {
         tcp_read(conn->serverfd, conn->messages[conn->messages_len], BUFSIZE);
-        if (conn->messages_len < 14)
+        if (conn->messages_len < MAX_LOGGED_MESSAGES)
             ++conn->messages_len;
+    }
+}
+
+void insert_message(char **messages, char *message, int pos) {
+    if (pos >= MAX_LOGGED_MESSAGES) {
+        for (int i = 0; i < MAX_LOGGED_MESSAGES - 1; i++)
+            memcpy(messages[i], messages[i + 1], BUFSIZE);
+
+        memcpy(messages[MAX_LOGGED_MESSAGES - 1], message, BUFSIZE);
+    } else {
+        memcpy(messages[pos], message, BUFSIZE);
     }
 }
