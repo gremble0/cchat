@@ -1,6 +1,4 @@
 #include "connection.h"
-#include <stdio.h>
-#include <string.h>
 
 int tcp_connect(int port, char *hostname) {
     int serverfd, connwc;
@@ -53,28 +51,23 @@ int tcp_write(int serverfd, char *buf, int count) {
     return write_count;
 }
 
-// maybe add timestamp to messages to order properly
 void *tcp_read_messages(void *args) {
     connection *conn = (connection*)args;
 
     while (1) {
-        tcp_read(conn->serverfd, conn->messages[conn->messages_len].text, BUFSIZE);
-        /* break; */
-        if (conn->messages_len < MAX_MESSAGES_2 - 1)
+        tcp_read(conn->serverfd, conn->messages[conn->messages_len], BUFSIZE);
+        if (conn->messages_len < MAX_LOGGED_MESSAGES)
             ++conn->messages_len;
     }
 }
 
-void insert_message(message **msgs, message *msg, int pos) {
-    memcpy(msgs[0]->text, msg->text, BUFSIZE);
-    /* printf("%d\n", pos); */
+void insert_message(char **messages, char *message, int pos) {
+    if (pos >= MAX_LOGGED_MESSAGES) {
+        for (int i = 0; i < MAX_LOGGED_MESSAGES - 1; i++)
+            memcpy(messages[i], messages[i + 1], BUFSIZE);
 
-    /* if (pos >= MAX_MESSAGES_2) { */
-    /*     for (int i = 0; i < MAX_MESSAGES_2 - 1; i++) */
-    /*         memcpy(msgs[i]->text, msgs[i + 1]->text, BUFSIZE); */
-
-    /*     memcpy(msgs[MAX_MESSAGES_2 - 1]->text, msg->text, BUFSIZE); */
-    /* } else { */
-    /*     memcpy(msgs[pos]->text, msg->text, BUFSIZE); */
-    /* } */
+        memcpy(messages[MAX_LOGGED_MESSAGES - 1], message, BUFSIZE);
+    } else {
+        memcpy(messages[pos], message, BUFSIZE);
+    }
 }

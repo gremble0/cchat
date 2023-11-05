@@ -1,18 +1,14 @@
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "ui.h"
 
 int main(int argc, char **argv) {
     int  port;
-    char *hostname, write_buf[BUFSIZE];
-    message messages[MAX_MESSAGES];
+    char *hostname, messages[MAX_MESSAGES][BUFSIZE], write_buf[BUFSIZE];
+    char **messages_ptr = malloc(MAX_MESSAGES * sizeof(char*));
 
-    for (int i = 0; i < MAX_MESSAGES; i++) {
-        /* messages[i] = (message*)malloc(BUFSIZE + MAX_USERNAME_LEN); */
-        messages[i].text = (char*)malloc(BUFSIZE);
-        messages[i].sender = (char*)malloc(MAX_USERNAME_LEN);
-    }
+    for (int i = 0; i < MAX_MESSAGES; i++)
+        messages_ptr[i] = messages[i];
 
     if (argc >= 2)
         port = atoi(argv[1]);
@@ -26,20 +22,17 @@ int main(int argc, char **argv) {
 
     connection conn = {
         .serverfd      = tcp_connect(port, hostname),
-        .messages      = messages,
+        .messages      = messages_ptr,
         .write_buf     = write_buf,
         .write_buf_len = 0,
         .messages_len  = 0,
     };
 
-    if (conn.serverfd < 0)
+    if (conn.serverfd < 0) {
+        free(messages_ptr);
         exit(EXIT_FAILURE);
-
-    pthread_t message_thread;
-    pthread_create(&message_thread, NULL, tcp_read_messages, &conn);
+    }
 
     DrawWindow(&conn);
-
-    pthread_join(message_thread, NULL);
-    exit(EXIT_SUCCESS);
+    free(messages_ptr);
 }
