@@ -1,8 +1,4 @@
-
 #include "ui.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 void DrawWindow(connection *conn) {
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cchat");

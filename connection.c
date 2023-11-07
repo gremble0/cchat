@@ -1,5 +1,4 @@
 #include "connection.h"
-#include <stdio.h>
 
 int tcp_connect(int port, char *hostname) {
     int serverfd, connwc;
