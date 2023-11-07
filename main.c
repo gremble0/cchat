@@ -4,11 +4,16 @@
 
 int main(int argc, char **argv) {
     int  port;
-    char *hostname, messages[MAX_MESSAGES][BUFSIZE], write_buf[BUFSIZE];
-    char **messages_ptr = malloc(MAX_MESSAGES * sizeof(char*));
+    char *hostname, write_buf[BUFSIZE];
+    message messages[MAX_MESSAGES];
+    message **messages_ptr = malloc(MAX_MESSAGES * sizeof(message*));
 
-    for (int i = 0; i < MAX_MESSAGES; i++)
-        messages_ptr[i] = messages[i];
+    for (int i = 0; i < MAX_MESSAGES; i++) {
+        messages[i].sender = (char*)malloc(BUFSIZE);
+        messages[i].text = (char*)malloc(BUFSIZE);
+
+        messages_ptr[i] = &messages[i];
+    }
 
     if (argc >= 2)
         port = atoi(argv[1]);
@@ -28,11 +33,8 @@ int main(int argc, char **argv) {
         .messages_len  = 0,
     };
 
-    if (conn.serverfd < 0) {
-        free(messages_ptr);
+    if (conn.serverfd < 0)
         exit(EXIT_FAILURE);
-    }
 
     DrawWindow(&conn);
-    free(messages_ptr);
 }

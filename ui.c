@@ -1,5 +1,8 @@
 
 #include "ui.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void DrawWindow(connection *conn) {
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cchat");
@@ -16,7 +19,7 @@ void DrawWindow(connection *conn) {
         DrawInputField(conn);
 
         for (int i = 0; i < conn->messages_len; i++)
-            DrawText(conn->messages[i], 10, CHATBOX_HEIGHT * i, FONT_SIZE, GOLD_YELLOW);
+            DrawText(conn->messages[i]->text, 10, CHATBOX_HEIGHT * i, FONT_SIZE, GOLD_YELLOW);
 
         EndDrawing();
     }
@@ -55,7 +58,13 @@ void DrawInputField(connection *conn) {
     }
 
     if (IsKeyPressed(KEY_ENTER) && conn->write_buf_len != 0) {
-        insert_message(conn->messages, conn->write_buf, conn->messages_len);
+        message new_message = {
+            .sender = "ME",
+            .text = (char*)malloc(BUFSIZE),
+        };
+
+        memcpy(new_message.text, conn->write_buf, BUFSIZE);
+        insert_message(conn->messages, &new_message, conn->messages_len);
         tcp_write(conn->serverfd, conn->write_buf, conn->write_buf_len + 1);
 
         if (conn->messages_len < MAX_MESSAGES)
