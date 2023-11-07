@@ -31,8 +31,13 @@ int main(int argc, char **argv) {
         .messages_len  = 0,
     };
 
-    if (conn.serverfd < 0)
-        exit(EXIT_FAILURE);
+    if (conn.serverfd < 0) {
+        free_messages(messages_ptr);
+        return EXIT_FAILURE;
+    }
 
     DrawWindow(&conn);
+
+    free_messages(messages_ptr);
+    return EXIT_SUCCESS;
 }

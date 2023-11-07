@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -29,4 +30,5 @@ int tcp_read(int serverfd, char *buf, int count);  /* Wrapper function for read(
 int tcp_write(int serverfd, char *buf, int count); /* Wrapper function for write() that checks for errors */
 void *tcp_read_messages(void *args);               /* Runs an infinite loop for reading from the serverfd, intended to be ran on separate thread */
 
-void insert_message(message **msgs, message *msg, int pos); /* inserts message into the messages array at index pos, rotates if would overflow */
+void insert_message(message **msgs, message *msg, int pos); /* Inserts message into the messages array at index pos, rotates if would overflow */
+void free_messages(message **msgs);                         /* Frees all fields of messages + message itself in array of messages */
