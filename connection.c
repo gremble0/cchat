@@ -65,6 +65,21 @@ void *tcp_read_messages(void *args) {
     }
 }
 
+message *parse_message(char *msg) {
+    message *ret = (message*)malloc(sizeof(message*));
+    char *sender, *text, *iter;
+    iter = strdup(msg);
+
+    sender = strtok(iter, ":");
+    text = strtok(NULL, "\0");
+
+    ret->sender = sender;
+    ret->text = ++text; // ++ to skip " " after ":"
+
+    free(iter);
+    return ret;
+}
+
 void insert_message(message **msgs, message *msg, int pos) {
     if (pos >= MAX_LOGGED_MESSAGES) {
         for (int i = 0; i < MAX_LOGGED_MESSAGES - 1; i++)
