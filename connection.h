@@ -11,8 +11,15 @@
 #define MAX_USERNAME_LEN 20
 #define MAX_MESSAGES_2 14 /* temporary */
 
+typedef enum message_type {
+    CONNECT,
+    DISCONNECT,
+    MESSAGE_SEND,
+} message_type;
+
 /* IDEA: make sender separate struct with some other stored information, like sent messages or something */
 typedef struct message {
+    message_type mt;
     char *text;
     char *sender;
 } message;
