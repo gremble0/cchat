@@ -1,3 +1,6 @@
+#include <pthread.h>
+#include <stdlib.h>
+
 #include "ui.h"
 
 // TODO: fix proper cleanup when server shuts down unexpectedly - start from read thread?

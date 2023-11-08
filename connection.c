@@ -1,3 +1,11 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/select.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
 #include "connection.h"
 
 int tcp_connect(int port, char *hostname) {
@@ -51,14 +59,13 @@ int tcp_write(int serverfd, char *buf, int count) {
     return write_count;
 }
 
-void *tcp_read_messages(void *__conn) {
-    connection *conn = (connection*)__conn;
+void *tcp_read_messages(void *conn_p) {
+    connection *conn = (connection*)conn_p;
     ssize_t read_count;
     char buf[BUFSIZE];
 
     while (1) {
         read_count = tcp_read(conn->serverfd, buf, BUFSIZE);
-        /* memcpy(conn->messages[conn->messages_len]->text, buf, read_count); */
 
         buf[read_count - 1] = '\0'; // -1 to remove newline
         message *new_message = parse_message(buf);

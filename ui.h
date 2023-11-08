@@ -1,7 +1,3 @@
-#include <raylib.h>
-#include <pthread.h>
-#include <stdlib.h>
-
 #include "connection.h"
 
 // TODO: split into two files, one draw related and one for util

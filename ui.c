@@ -1,3 +1,8 @@
+#include <raylib.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "ui.h"
 
 // TODO: separate drawing and networking components
