@@ -1,4 +1,6 @@
 #include "connection.h"
+#include <stdio.h>
+#include <string.h>
 
 int tcp_connect(int port, char *hostname) {
     int serverfd, connwc;
@@ -54,9 +56,11 @@ int tcp_write(int serverfd, char *buf, int count) {
 void *tcp_read_messages(void *args) {
     connection *conn = (connection*)args;
     ssize_t read_count;
+    char buf[BUFSIZE];
 
     while (1) {
-        read_count = tcp_read(conn->serverfd, conn->messages[conn->messages_len]->text, BUFSIZE);
+        read_count = tcp_read(conn->serverfd, buf, BUFSIZE);
+        memcpy(conn->messages[conn->messages_len]->text, buf, read_count);
         if (read_count < 0)
             return (void*)read_count;
         
