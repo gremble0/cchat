@@ -60,7 +60,12 @@ void *tcp_read_messages(void *args) {
 
     while (1) {
         read_count = tcp_read(conn->serverfd, buf, BUFSIZE);
-        memcpy(conn->messages[conn->messages_len]->text, buf, read_count);
+        /* memcpy(conn->messages[conn->messages_len]->text, buf, read_count); */
+
+        buf[read_count - 1] = '\0'; // -1 to remove newline
+        message *new_message = parse_message(buf);
+        insert_message(conn->messages, new_message, conn->messages_len);
+
         if (read_count < 0)
             return (void*)read_count;
         
@@ -71,14 +76,26 @@ void *tcp_read_messages(void *args) {
 
 message *parse_message(char *msg) {
     message *ret = (message*)malloc(sizeof(message*));
-    char *sender, *text, *iter;
-    iter = strdup(msg);
-
-    sender = strtok(iter, ":");
-    text = strtok(NULL, "\0");
-
-    ret->sender = sender;
-    ret->text = ++text; // ++ to skip " " after ":"
+    char *iter = strdup(msg);
+    char *type = strtok(iter, ":");
+    
+    if (strcmp("SERVER_INFO", type) == 0) {
+        ret->sender = "server";
+        ret->text = "welcome";
+    } else if (strcmp("CONNECT", type) == 0) {
+        ret->sender = "connect";
+        ret->text = "user joined";
+    } else if (strcmp("SEND", type) == 0) {
+        ret->sender = "user";
+        ret->text = "message";
+    } else if (strcmp("DISCONNECT", type) == 0) {
+        ret->sender = "user";
+        ret->text = "disconnect";
+    } else {
+        fprintf(stderr, "%s:%d Invalid message type: %s\n", __FILE__, __LINE__, type);
+        free(iter);
+        return NULL;
+    }
 
     free(iter);
     return ret;
