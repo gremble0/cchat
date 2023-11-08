@@ -15,11 +15,15 @@ void DrawWindow(connection *conn) {
         DrawInputField(conn);
 
         for (int i = 0; i < conn->messages_len; i++) {
-            char *outstr;
+            char outstr[BUFSIZE]; // + MAX_USERNAME_LEN ???
             if (conn->messages[i]->sender == NULL) {
-
+                strcpy(outstr, "YOU: ");
+            } else {
+                strcpy(outstr, conn->messages[i]->sender);
             }
-            DrawText(conn->messages[i]->text, 10, CHATBOX_HEIGHT * i, FONT_SIZE, GOLD_YELLOW);
+            strcat(outstr, conn->messages[i]->text);
+
+            DrawText(outstr, 10, CHATBOX_HEIGHT * i, FONT_SIZE, GOLD_YELLOW);
         }
 
         EndDrawing();
