@@ -1,17 +1,14 @@
 #include "ui.h"
 
+// TODO: fix proper cleanup when server shuts down unexpectedly - start from read thread?
 int main(int argc, char **argv) {
     int  port;
     char *hostname, write_buf[BUFSIZE];
     message messages[MAX_MESSAGES];
     message **messages_ptr = malloc(MAX_MESSAGES * sizeof(message*));
 
-    for (int i = 0; i < MAX_MESSAGES; i++) {
-        messages[i].sender = (char*)malloc(BUFSIZE);
-        messages[i].text = (char*)malloc(BUFSIZE);
-
+    for (int i = 0; i < MAX_MESSAGES; i++)
         messages_ptr[i] = &messages[i];
-    }
 
     if (argc >= 2)
         port = atoi(argv[1]);
@@ -32,7 +29,7 @@ int main(int argc, char **argv) {
     };
 
     if (conn.serverfd < 0) {
-        free_messages(messages_ptr);
+        free(messages_ptr);
         return EXIT_FAILURE;
     }
 

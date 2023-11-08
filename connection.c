@@ -51,8 +51,8 @@ int tcp_write(int serverfd, char *buf, int count) {
     return write_count;
 }
 
-void *tcp_read_messages(void *args) {
-    connection *conn = (connection*)args;
+void *tcp_read_messages(void *__conn) {
+    connection *conn = (connection*)__conn;
     ssize_t read_count;
     char buf[BUFSIZE];
 
@@ -122,18 +122,17 @@ void insert_message(message **msgs, message *msg, int pos) {
         for (int i = 0; i < MAX_LOGGED_MESSAGES - 1; i++)
             memcpy(msgs[i], msgs[i + 1], sizeof(message));
 
-        memcpy(msgs[MAX_LOGGED_MESSAGES - 1], msg, sizeof(message));
+        msgs[MAX_LOGGED_MESSAGES - 1] = msg;
     } else {
-        memcpy(msgs[pos], msg, sizeof(message));
+        msgs[pos] = msg;
     }
-
-    free(msg);
 }
 
 void free_messages(message **msgs) {
     for (int i = 0; i < MAX_LOGGED_MESSAGES; i++) {
         free(msgs[i]->text);
         free(msgs[i]->sender);
+        free(msgs[i]);
     }
 
     free(msgs);
