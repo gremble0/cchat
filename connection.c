@@ -126,12 +126,15 @@ void insert_message(message **msgs, message *msg, int pos) {
     } else {
         memcpy(msgs[pos], msg, sizeof(message));
     }
+
+    free(msg);
 }
 
 void free_messages(message **msgs) {
     for (int i = 0; i < MAX_LOGGED_MESSAGES; i++) {
         free(msgs[i]->text);
         free(msgs[i]->sender);
-        free(msgs[i]);
     }
+
+    free(msgs);
 }

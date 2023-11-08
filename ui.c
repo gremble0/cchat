@@ -62,14 +62,13 @@ void DrawInputField(connection *conn) {
     }
 
     if (IsKeyPressed(KEY_ENTER) && conn->write_buf_len != 0) {
-        message new_message = {
-            .type = SEND,
-            .sender = NULL, // TODO: get clients username
-            .text = (char*)malloc(BUFSIZE),
-        };
+        message *new_message = (message*)malloc(sizeof(message*));
+        new_message->type = SEND;
+        new_message->sender = NULL; // TODO: get clients username, assigning .sender otherwise unnecessary
+        new_message->text = (char*)malloc(BUFSIZE);
 
-        memcpy(new_message.text, conn->write_buf, BUFSIZE);
-        insert_message(conn->messages, &new_message, conn->messages_len);
+        memcpy(new_message->text, conn->write_buf, BUFSIZE);
+        insert_message(conn->messages, new_message, conn->messages_len);
         tcp_write(conn->serverfd, conn->write_buf, conn->write_buf_len + 1);
 
         if (conn->messages_len < MAX_MESSAGES)
