@@ -79,18 +79,36 @@ message *parse_message(char *msg) {
     char *iter = strdup(msg);
     char *type = strtok(iter, ":");
     
+    // TODO: differentiate between these types
     if (strcmp("SERVER_INFO", type) == 0) {
-        ret->sender = "server";
-        ret->text = "welcome";
+        ret->type = SERVER_INFO;
+        
+        char *text = strdup(strtok(NULL, "\0"));
+        
+        ret->sender = "SERVER";
+        ret->text = text;
     } else if (strcmp("CONNECT", type) == 0) {
-        ret->sender = "connect";
-        ret->text = "user joined";
+        ret->type = CONNECT;
+
+        char *text = strdup(strtok(NULL, "\0"));
+        
+        ret->sender = "SERVER";
+        ret->text = text;
     } else if (strcmp("SEND", type) == 0) {
-        ret->sender = "user";
-        ret->text = "message";
+        ret->type = SEND;
+
+        char *sender = strdup(strtok(NULL, ":"));
+        char *text = strdup(strtok(NULL, "\0"));
+        
+        ret->sender = sender;
+        ret->text = text;
     } else if (strcmp("DISCONNECT", type) == 0) {
-        ret->sender = "user";
-        ret->text = "disconnect";
+        ret->type = DISCONNECT;
+        
+        char *text = strdup(strtok(NULL, "\0"));
+        
+        ret->sender = "SERVER";
+        ret->text = text;
     } else {
         fprintf(stderr, "%s:%d Invalid message type: %s\n", __FILE__, __LINE__, type);
         free(iter);

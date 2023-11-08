@@ -14,12 +14,15 @@ void DrawWindow(connection *conn) {
         // TODO: inputfield drawing on separate thread?
         DrawInputField(conn);
 
+        // TODO: log whats being printed?
+        // TODO: make it draw your username instead of YOU. make struct for sender and check senders ip?
         for (int i = 0; i < conn->messages_len; i++) {
             char outstr[BUFSIZE]; // + MAX_USERNAME_LEN ???
             if (conn->messages[i]->sender == NULL) {
                 strcpy(outstr, "YOU: ");
             } else {
                 strcpy(outstr, conn->messages[i]->sender);
+                strcat(outstr, ": ");
             }
             strcat(outstr, conn->messages[i]->text);
 
