@@ -6,16 +6,16 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#define MAX_LOGGED_MESSAGES 14 /* same as MAX_MESSAGES for now */
+#define MAX_LOGGED_MESSAGES 16 /* same as MAX_MESSAGES for now */
 #define BUFSIZE 512 /* size of buffer we will read from the server into */
 #define MAX_USERNAME_LEN 20
-#define MAX_MESSAGES_2 14 /* temporary */
 
 typedef enum message_type {
-    SERVER_INFO,
-    CONNECT,
-    DISCONNECT,
-    SEND,
+    SERVER_INFO, /* server is sending some info, e.g. welcome message */
+    CONNECT, /* client has connected */
+    DISCONNECT, /* client has disconnected */
+    RECEIVE, /* messages sent by other clients */
+    SEND, /* messages sent by this client */
 } message_type;
 
 /* IDEA: make sender separate struct with some other stored information, like sent messages or something */

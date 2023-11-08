@@ -1,11 +1,9 @@
 #include "ui.h"
 
+// TODO: separate drawing and networking components
 void DrawWindow(connection *conn) {
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cchat");
-    SetTargetFPS(10);
-
-    pthread_t message_thread;
-    pthread_create(&message_thread, NULL, tcp_read_messages, &*conn);
+    SetTargetFPS(20);
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -14,11 +12,11 @@ void DrawWindow(connection *conn) {
         // TODO: inputfield drawing on separate thread?
         DrawInputField(conn);
 
-        // TODO: log whats being printed?
+        // TODO: log whats being drawn?
         // TODO: make it draw your username instead of YOU. make struct for sender and check senders ip?
         for (int i = 0; i < conn->messages_len; i++) {
             char outstr[BUFSIZE]; // + MAX_USERNAME_LEN ???
-            if (conn->messages[i]->sender == NULL) {
+            if (conn->messages[i]->type == SEND) {
                 strcpy(outstr, "YOU: ");
             } else {
                 strcpy(outstr, conn->messages[i]->sender);
@@ -31,8 +29,6 @@ void DrawWindow(connection *conn) {
 
         EndDrawing();
     }
-
-    pthread_join(message_thread, NULL);
 }
 
 void DrawBackground() {
@@ -68,7 +64,7 @@ void DrawInputField(connection *conn) {
     if (IsKeyPressed(KEY_ENTER) && conn->write_buf_len != 0) {
         message new_message = {
             .type = SEND,
-            .sender = NULL,
+            .sender = NULL, // TODO: get clients username
             .text = (char*)malloc(BUFSIZE),
         };
 

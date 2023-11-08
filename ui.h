@@ -5,8 +5,8 @@
 #include "connection.h"
 
 // TODO: split into two files, one draw related and one for util
-#define WINDOW_WIDTH   425
-#define WINDOW_HEIGHT  750
+#define WINDOW_WIDTH   475
+#define WINDOW_HEIGHT  850
 #define CHATBOX_HEIGHT 50
 #define FONT_SIZE      18
 

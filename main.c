@@ -36,8 +36,12 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
+    pthread_t message_thread;
+    pthread_create(&message_thread, NULL, tcp_read_messages, &conn);
+
     DrawWindow(&conn);
 
+    pthread_join(message_thread, NULL);
     free_messages(messages_ptr);
     return EXIT_SUCCESS;
 }

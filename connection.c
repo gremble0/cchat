@@ -1,6 +1,4 @@
 #include "connection.h"
-#include <stdio.h>
-#include <string.h>
 
 int tcp_connect(int port, char *hostname) {
     int serverfd, connwc;
@@ -95,13 +93,13 @@ message *parse_message(char *msg) {
         ret->sender = "SERVER";
         ret->text = text;
     } else if (strcmp("SEND", type) == 0) {
-        ret->type = SEND;
+        ret->type = RECEIVE;
 
         char *sender = strdup(strtok(NULL, ":"));
         char *text = strdup(strtok(NULL, "\0"));
         
-        ret->sender = sender;
-        ret->text = text;
+        ret->sender = ++sender;
+        ret->text = ++text;
     } else if (strcmp("DISCONNECT", type) == 0) {
         ret->type = DISCONNECT;
         
