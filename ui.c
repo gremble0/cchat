@@ -14,8 +14,13 @@ void DrawWindow(connection *conn) {
         // TODO: inputfield drawing on separate thread?
         DrawInputField(conn);
 
-        for (int i = 0; i < conn->messages_len; i++)
+        for (int i = 0; i < conn->messages_len; i++) {
+            char *outstr;
+            if (conn->messages[i]->sender == NULL) {
+
+            }
             DrawText(conn->messages[i]->text, 10, CHATBOX_HEIGHT * i, FONT_SIZE, GOLD_YELLOW);
+        }
 
         EndDrawing();
     }
@@ -55,7 +60,8 @@ void DrawInputField(connection *conn) {
 
     if (IsKeyPressed(KEY_ENTER) && conn->write_buf_len != 0) {
         message new_message = {
-            .sender = "ME",
+            .type = SEND,
+            .sender = NULL,
             .text = (char*)malloc(BUFSIZE),
         };
 

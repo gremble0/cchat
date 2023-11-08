@@ -12,14 +12,15 @@
 #define MAX_MESSAGES_2 14 /* temporary */
 
 typedef enum message_type {
+    SERVER_INFO,
     CONNECT,
     DISCONNECT,
-    MESSAGE_SEND,
+    SEND,
 } message_type;
 
 /* IDEA: make sender separate struct with some other stored information, like sent messages or something */
 typedef struct message {
-    message_type mt;
+    message_type type;
     char *text;
     char *sender;
 } message;
