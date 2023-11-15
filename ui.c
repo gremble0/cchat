@@ -1,5 +1,6 @@
 #include <pthread.h>
 #include <raylib.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +13,7 @@ void DrawWindow(connection *conn) {
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cchat");
     SetTargetFPS(20);
 
-    Font cantarell = LoadFont("./assets/Cantarell-Regular.ttf");
+    Font cantarell = LoadFontEx("./assets/Cantarell-Regular.ttf", FONT_SIZE, NULL, 0);
     GenTextureMipmaps(&cantarell.texture);
     SetTextureFilter(cantarell.texture, TEXTURE_FILTER_BILINEAR);
 
@@ -35,11 +36,14 @@ void DrawWindow(connection *conn) {
             }
             strcat(outstr, conn->messages[i]->text);
 
-            Vector2 pos = {
-                .x = 10,
-                .y = CHATBOX_HEIGHT * i,
+            Rectangle boundaries = {
+                .x      = 0,
+                .y      = CHATBOX_HEIGHT * i,
+                .width  = WINDOW_WIDTH,
+                .height = CHATBOX_HEIGHT,
             };
-            DrawTextEx(cantarell, outstr, pos, FONT_SIZE, 0, GOLD_YELLOW);
+
+            DrawTextInBounds(cantarell, outstr, boundaries, GOLD_YELLOW);
         }
 
         EndDrawing();
@@ -51,6 +55,20 @@ void DrawBackground() {
 
     for (int i = 0; i < WINDOW_HEIGHT; i += CHATBOX_HEIGHT * 2)
         DrawRectangle(0, i, WINDOW_WIDTH, CHATBOX_HEIGHT, SECONDARY_BACKGROUND_COLOR);
+}
+
+// TODO: add tint to params
+void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint) {
+    Vector2 draw_pos = { boundaries.x, boundaries.y };
+
+    for (size_t i = 0; i < strlen(text); i++) {
+        if (draw_pos.x >= boundaries.width) {
+            draw_pos.x = boundaries.x;
+            draw_pos.y += font.baseSize;
+        }
+        DrawTextCodepoint(font, text[i], draw_pos, font.baseSize, tint);
+        draw_pos.x += GetGlyphInfo(font, text[i]).advanceX;
+    }
 }
 
 void DrawInputField(connection *conn) {

@@ -15,9 +15,12 @@
 #define FONT_COLOR                 GetColor(0xccccccff)
 #define GOLD_YELLOW                GetColor(0xe1b655ff)
 
-void DrawWindow(connection *p);     /* Main entrypoint to drawing ui elements in the window */
-void DrawInputField(connection *p); /* NOTE: assumes BeginDraw() has been called */
-void DrawBackground();              /* NOTE: assumes BeginDraw() has been called */
+#define ChatBoxRect Rect
+
+void DrawWindow(connection *p);                                                  /* Main entrypoint to drawing ui elements in the window */
+void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint);  /* Draw text with line wrapping, NOTE: assumes BeginDraw() has been called */
+void DrawInputField(connection *p);                                              /* NOTE: assumes BeginDraw() has been called */
+void DrawBackground();                                                           /* NOTE: assumes BeginDraw() has been called */
 
 /* typedef struct cchat_ui { */
 /*     Font cantarell = LoadFontEx("./assets/Cantarell-Regular.ttf", FONT_SIZE, 0, 0); */
