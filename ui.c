@@ -1,6 +1,5 @@
 #include <pthread.h>
 #include <raylib.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +21,7 @@ void DrawWindow(connection *conn) {
 
         DrawBackground();
         // TODO: inputfield drawing on separate thread?
-        DrawInputField(conn);
+        DrawInputField(conn, cantarell, FONT_COLOR);
 
         // TODO: log whats being drawn?
         // TODO: make it draw your username instead of YOU. make struct for sender and check senders ip?
@@ -57,7 +56,6 @@ void DrawBackground() {
         DrawRectangle(0, i, WINDOW_WIDTH, CHATBOX_HEIGHT, SECONDARY_BACKGROUND_COLOR);
 }
 
-// TODO: add tint to params
 void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint) {
     Vector2 draw_pos = { boundaries.x, boundaries.y };
 
@@ -71,8 +69,8 @@ void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint) {
     }
 }
 
-void DrawInputField(connection *conn) {
-    Rectangle input_field = {
+void DrawInputField(connection *conn, Font font, Color tint) {
+    static Rectangle input_field = {
         .x      = 0,
         .y      = WINDOW_HEIGHT - CHATBOX_HEIGHT,
         .width  = WINDOW_WIDTH,
@@ -113,5 +111,5 @@ void DrawInputField(connection *conn) {
 
     DrawRectangleRec(input_field, TERTIARY_BACKGROUND_COLOR);
     DrawRectangleLines((int)input_field.x, (int)input_field.y, (int)input_field.width, (int)input_field.height, GOLD_YELLOW);
-    DrawText(conn->write_buf, (int)input_field.x + 5, (int)input_field.y + 8, FONT_SIZE, FONT_COLOR);
+    DrawTextInBounds(font, conn->write_buf, input_field, tint);
 }

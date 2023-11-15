@@ -5,7 +5,7 @@
 #define WINDOW_WIDTH   475
 #define WINDOW_HEIGHT  850
 #define CHATBOX_HEIGHT 50
-#define FONT_SIZE      23
+#define FONT_SIZE      25
 
 #define MAX_MESSAGES (WINDOW_HEIGHT / CHATBOX_HEIGHT - 1)
 
@@ -19,9 +19,5 @@
 
 void DrawWindow(connection *p);                                                  /* Main entrypoint to drawing ui elements in the window */
 void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint);  /* Draw text with line wrapping, NOTE: assumes BeginDraw() has been called */
-void DrawInputField(connection *p);                                              /* NOTE: assumes BeginDraw() has been called */
+void DrawInputField(connection *p, Font font, Color tint);                       /* NOTE: assumes BeginDraw() has been called */
 void DrawBackground();                                                           /* NOTE: assumes BeginDraw() has been called */
-
-/* typedef struct cchat_ui { */
-/*     Font cantarell = LoadFontEx("./assets/Cantarell-Regular.ttf", FONT_SIZE, 0, 0); */
-/* } cchat_ui; */
