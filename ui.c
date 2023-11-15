@@ -1,14 +1,20 @@
-#include <raylib.h>
 #include <pthread.h>
+#include <raylib.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "ui.h"
 
+// Useful function MeasureTextEx()
 // TODO: separate drawing and networking components
 void DrawWindow(connection *conn) {
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cchat");
     SetTargetFPS(20);
+
+    Font cantarell = LoadFont("./assets/Cantarell-Regular.ttf");
+    GenTextureMipmaps(&cantarell.texture);
+    SetTextureFilter(cantarell.texture, TEXTURE_FILTER_BILINEAR);
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -29,7 +35,11 @@ void DrawWindow(connection *conn) {
             }
             strcat(outstr, conn->messages[i]->text);
 
-            DrawText(outstr, 10, CHATBOX_HEIGHT * i, FONT_SIZE, GOLD_YELLOW);
+            Vector2 pos = {
+                .x = 10,
+                .y = CHATBOX_HEIGHT * i,
+            };
+            DrawTextEx(cantarell, outstr, pos, FONT_SIZE, 0, GOLD_YELLOW);
         }
 
         EndDrawing();

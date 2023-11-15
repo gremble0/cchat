@@ -1,10 +1,11 @@
 #include "connection.h"
+#include <raylib.h>
 
 // TODO: split into two files, one draw related and one for util
 #define WINDOW_WIDTH   475
 #define WINDOW_HEIGHT  850
 #define CHATBOX_HEIGHT 50
-#define FONT_SIZE      18
+#define FONT_SIZE      23
 
 #define MAX_MESSAGES (WINDOW_HEIGHT / CHATBOX_HEIGHT - 1)
 
@@ -17,3 +18,7 @@
 void DrawWindow(connection *p);     /* Main entrypoint to drawing ui elements in the window */
 void DrawInputField(connection *p); /* NOTE: assumes BeginDraw() has been called */
 void DrawBackground();              /* NOTE: assumes BeginDraw() has been called */
+
+/* typedef struct cchat_ui { */
+/*     Font cantarell = LoadFontEx("./assets/Cantarell-Regular.ttf", FONT_SIZE, 0, 0); */
+/* } cchat_ui; */
