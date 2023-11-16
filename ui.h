@@ -15,9 +15,16 @@
 #define FONT_COLOR                 GetColor(0xccccccff)
 #define GOLD_YELLOW                GetColor(0xe1b655ff)
 
-#define ChatBoxRect Rect
+typedef struct CchatUiConf {
+    Font font;
+    Color bg1;
+    Color bg2;
+    Color bg3;
+    Color accent;
+    Color font_color;
+} CchatUiConf;
 
-void DrawWindow(connection *p);                                                      /* Main entrypoint to drawing ui elements in the window */
+void DrawWindow(connection *p, CchatUiConf *conf);                                                      /* Main entrypoint to drawing ui elements in the window */
 void DrawChatBox(Font font, char *text, Rectangle boundaries, Color tint, Color bg); /* Draws a box with text for a message */
 void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint);      /* Draw text with line wrapping on characters. TODO: line wrapping on words*/
 void DrawInputField(connection *p, Font font, Color tint);                           /* Draws input field and handles sending messages through the connection */

@@ -7,22 +7,14 @@
 
 #include "ui.h"
 
-// Useful function MeasureTextEx()
 // TODO: separate drawing and networking components
-void DrawWindow(connection *conn) {
-    InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cchat");
-    SetTargetFPS(20);
-
-    Font cantarell = LoadFontEx("./assets/Cantarell-Regular.ttf", FONT_SIZE, NULL, 0);
-    GenTextureMipmaps(&cantarell.texture);
-    SetTextureFilter(cantarell.texture, TEXTURE_FILTER_BILINEAR);
-
+void DrawWindow(connection *conn, CchatUiConf *conf) {
     while (!WindowShouldClose()) {
         BeginDrawing();
 
-        ClearBackground(BACKGROUND_COLOR);
+        ClearBackground(conf->bg1);
         // TODO: inputfield drawing on separate thread?
-        DrawInputField(conn, cantarell, FONT_COLOR);
+        DrawInputField(conn, conf->font, conf->font_color);
 
         // TODO: log whats being drawn?
         // TODO: make it draw your username instead of YOU. make struct for sender and check senders ip?
@@ -45,7 +37,7 @@ void DrawWindow(connection *conn) {
                 .height = CHATBOX_HEIGHT,
             };
 
-            DrawChatBox(cantarell, outstr, boundaries, GOLD_YELLOW, box_secondary_color ? SECONDARY_BACKGROUND_COLOR : BACKGROUND_COLOR);
+            DrawChatBox(conf->font, outstr, boundaries, conf->accent, box_secondary_color ? SECONDARY_BACKGROUND_COLOR : BACKGROUND_COLOR);
             box_secondary_color = !box_secondary_color;
         }
 
