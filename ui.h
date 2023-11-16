@@ -14,11 +14,13 @@ typedef struct CchatUiConf {
     Color bg1;
     Color bg2;
     Color bg3;
-    Color accent;
+    Color accent_color;
     Color font_color;
 } CchatUiConf;
 
-void DrawWindow(connection *p, CchatUiConf *conf); /* Main entrypoint to drawing ui elements in the window */
-void DrawChatBox(CchatUiConf *conf, char *text, Rectangle boundaries, bool should_use_bg2); /* Draws a box with text for a message */
-void DrawTextInBounds(CchatUiConf *conf, char *text, Rectangle boundaries); /* Draw text with line wrapping on characters. TODO: line wrapping on words*/
+void DrawWindow(CchatUiConf *conf, connection *p); /* Main entrypoint to drawing ui elements in the window */
+void DrawChatBox(CchatUiConf *conf, message *msg, Rectangle boundaries, bool should_use_bg2); /* Draws a box with text for a message */
 void DrawInputField(CchatUiConf *conf, connection *p); /* Draws input field and handles sending messages through the connection */
+
+/* Raylib extensions */
+void DrawTextInBounds(Font font, char *text, Rectangle *boundaries, float fontSize, Color tint);

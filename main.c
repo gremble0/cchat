@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
         .bg1 = GetColor(0x151515ff), // TODO delete these macros
         .bg2 = GetColor(0x191919ff),
         .bg3 = GetColor(0x1c1c1cff),
-        .accent = GetColor(0xe1b655ff),
+        .accent_color = GetColor(0xe1b655ff),
         .font_color = GetColor(0xccccccff),
     };
 
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
     pthread_t message_thread;
     pthread_create(&message_thread, NULL, tcp_read_messages, &conn);
 
-    DrawWindow(&conn, &conf);
+    DrawWindow(&conf, &conn);
 
     pthread_join(message_thread, NULL);
     free_messages(messages_ptr);
