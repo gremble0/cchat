@@ -17,7 +17,7 @@
 
 #define ChatBoxRect Rect
 
-void DrawWindow(connection *p);                                                  /* Main entrypoint to drawing ui elements in the window */
-void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint);  /* Draw text with line wrapping, NOTE: assumes BeginDraw() has been called */
-void DrawInputField(connection *p, Font font, Color tint);                       /* NOTE: assumes BeginDraw() has been called */
-void DrawBackground();                                                           /* NOTE: assumes BeginDraw() has been called */
+void DrawWindow(connection *p);                                                      /* Main entrypoint to drawing ui elements in the window */
+void DrawChatBox(Font font, char *text, Rectangle boundaries, Color tint, Color bg); /* Draws a box with text for a message */
+void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint);      /* Draw text with line wrapping on characters. TODO: line wrapping on words*/
+void DrawInputField(connection *p, Font font, Color tint);                           /* Draws input field and handles sending messages through the connection */

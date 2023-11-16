@@ -1,5 +1,6 @@
 #include <pthread.h>
 #include <raylib.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,12 +20,13 @@ void DrawWindow(connection *conn) {
     while (!WindowShouldClose()) {
         BeginDrawing();
 
-        DrawBackground();
+        ClearBackground(BACKGROUND_COLOR);
         // TODO: inputfield drawing on separate thread?
         DrawInputField(conn, cantarell, FONT_COLOR);
 
         // TODO: log whats being drawn?
         // TODO: make it draw your username instead of YOU. make struct for sender and check senders ip?
+        bool box_secondary_color = true;
         for (int i = 0; i < conn->messages_len; i++) {
             char outstr[BUFSIZE]; // + MAX_USERNAME_LEN ???
             if (conn->messages[i]->type == SEND) {
@@ -35,25 +37,25 @@ void DrawWindow(connection *conn) {
             }
             strcat(outstr, conn->messages[i]->text);
 
+            char margin = 1;
             Rectangle boundaries = {
-                .x      = 0,
-                .y      = CHATBOX_HEIGHT * i,
-                .width  = WINDOW_WIDTH,
+                .x      = 0 + margin,
+                .y      = CHATBOX_HEIGHT * i + margin,
+                .width  = WINDOW_WIDTH - margin,
                 .height = CHATBOX_HEIGHT,
             };
 
-            DrawTextInBounds(cantarell, outstr, boundaries, GOLD_YELLOW);
+            DrawChatBox(cantarell, outstr, boundaries, GOLD_YELLOW, box_secondary_color ? SECONDARY_BACKGROUND_COLOR : BACKGROUND_COLOR);
+            box_secondary_color = !box_secondary_color;
         }
 
         EndDrawing();
     }
 }
 
-void DrawBackground() {
-    ClearBackground(BACKGROUND_COLOR);
-
-    for (int i = 0; i < WINDOW_HEIGHT; i += CHATBOX_HEIGHT * 2)
-        DrawRectangle(0, i, WINDOW_WIDTH, CHATBOX_HEIGHT, SECONDARY_BACKGROUND_COLOR);
+void DrawChatBox(Font font, char *text, Rectangle boundaries, Color tint, Color bg) {
+    DrawRectangle(boundaries.x, boundaries.y, boundaries.width, boundaries.height, bg);
+    DrawTextInBounds(font, text, boundaries, tint);
 }
 
 void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint) {
