@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     SetTargetFPS(20);
 
     CchatUiConf conf = {
-        .font = LoadFontEx("./assets/Cantarell-Regular.ttf", FONT_SIZE, NULL, 0),
+        .font = LoadFontEx("./assets/Cantarell-Regular.ttf", 25, NULL, 0),
         .bg1 = GetColor(0x151515ff), // TODO delete these macros
         .bg2 = GetColor(0x191919ff),
         .bg3 = GetColor(0x1c1c1cff),

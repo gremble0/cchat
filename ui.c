@@ -14,11 +14,11 @@ void DrawWindow(connection *conn, CchatUiConf *conf) {
 
         ClearBackground(conf->bg1);
         // TODO: inputfield drawing on separate thread?
-        DrawInputField(conn, conf->font, conf->font_color);
+        DrawInputField(conf, conn);
 
         // TODO: log whats being drawn?
         // TODO: make it draw your username instead of YOU. make struct for sender and check senders ip?
-        bool box_secondary_color = true;
+        bool should_use_bg2 = true;
         for (int i = 0; i < conn->messages_len; i++) {
             char outstr[BUFSIZE]; // + MAX_USERNAME_LEN ???
             if (conn->messages[i]->type == SEND) {
@@ -37,33 +37,33 @@ void DrawWindow(connection *conn, CchatUiConf *conf) {
                 .height = CHATBOX_HEIGHT,
             };
 
-            DrawChatBox(conf->font, outstr, boundaries, conf->accent, box_secondary_color ? SECONDARY_BACKGROUND_COLOR : BACKGROUND_COLOR);
-            box_secondary_color = !box_secondary_color;
+            DrawChatBox(conf, outstr, boundaries, should_use_bg2);
+            should_use_bg2 = !should_use_bg2;
         }
 
         EndDrawing();
     }
 }
 
-void DrawChatBox(Font font, char *text, Rectangle boundaries, Color tint, Color bg) {
-    DrawRectangle(boundaries.x, boundaries.y, boundaries.width, boundaries.height, bg);
-    DrawTextInBounds(font, text, boundaries, tint);
+void DrawChatBox(CchatUiConf *conf, char *text, Rectangle boundaries, bool should_use_bg2) {
+    DrawRectangle(boundaries.x, boundaries.y, boundaries.width, boundaries.height, should_use_bg2 ? conf->bg2 : conf->bg1);
+    DrawTextInBounds(conf, text, boundaries);
 }
 
-void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint) {
+void DrawTextInBounds(CchatUiConf *conf, char *text, Rectangle boundaries) {
     Vector2 draw_pos = { boundaries.x, boundaries.y };
 
     for (size_t i = 0; i < strlen(text); i++) {
         if (draw_pos.x >= boundaries.width) {
             draw_pos.x = boundaries.x;
-            draw_pos.y += font.baseSize;
+            draw_pos.y += conf->font.baseSize;
         }
-        DrawTextCodepoint(font, text[i], draw_pos, font.baseSize, tint);
-        draw_pos.x += GetGlyphInfo(font, text[i]).advanceX;
+        DrawTextCodepoint(conf->font, text[i], draw_pos, conf->font.baseSize, conf->font_color);
+        draw_pos.x += GetGlyphInfo(conf->font, text[i]).advanceX;
     }
 }
 
-void DrawInputField(connection *conn, Font font, Color tint) {
+void DrawInputField(CchatUiConf *conf, connection *conn) {
     static Rectangle input_field = {
         .x      = 0,
         .y      = WINDOW_HEIGHT - CHATBOX_HEIGHT,
@@ -103,7 +103,7 @@ void DrawInputField(connection *conn, Font font, Color tint) {
         conn->write_buf_len = 0;
     }
 
-    DrawRectangleRec(input_field, TERTIARY_BACKGROUND_COLOR);
-    DrawRectangleLines((int)input_field.x, (int)input_field.y, (int)input_field.width, (int)input_field.height, GOLD_YELLOW);
-    DrawTextInBounds(font, conn->write_buf, input_field, tint);
+    DrawRectangleRec(input_field, conf->bg3);
+    DrawRectangleLines((int)input_field.x, (int)input_field.y, (int)input_field.width, (int)input_field.height, conf->accent);
+    DrawTextInBounds(conf, conn->write_buf, input_field);
 }

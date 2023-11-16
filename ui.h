@@ -1,19 +1,13 @@
 #include "connection.h"
 #include <raylib.h>
+#include <stdbool.h>
 
 // TODO: split into two files, one draw related and one for util
 #define WINDOW_WIDTH   475
 #define WINDOW_HEIGHT  850
 #define CHATBOX_HEIGHT 50
-#define FONT_SIZE      25
 
 #define MAX_MESSAGES (WINDOW_HEIGHT / CHATBOX_HEIGHT - 1)
-
-#define BACKGROUND_COLOR           GetColor(0x151515ff)
-#define SECONDARY_BACKGROUND_COLOR GetColor(0x191919ff)
-#define TERTIARY_BACKGROUND_COLOR  GetColor(0x1c1c1cff)
-#define FONT_COLOR                 GetColor(0xccccccff)
-#define GOLD_YELLOW                GetColor(0xe1b655ff)
 
 typedef struct CchatUiConf {
     Font font;
@@ -24,7 +18,7 @@ typedef struct CchatUiConf {
     Color font_color;
 } CchatUiConf;
 
-void DrawWindow(connection *p, CchatUiConf *conf);                                                      /* Main entrypoint to drawing ui elements in the window */
-void DrawChatBox(Font font, char *text, Rectangle boundaries, Color tint, Color bg); /* Draws a box with text for a message */
-void DrawTextInBounds(Font font, char *text, Rectangle boundaries, Color tint);      /* Draw text with line wrapping on characters. TODO: line wrapping on words*/
-void DrawInputField(connection *p, Font font, Color tint);                           /* Draws input field and handles sending messages through the connection */
+void DrawWindow(connection *p, CchatUiConf *conf); /* Main entrypoint to drawing ui elements in the window */
+void DrawChatBox(CchatUiConf *conf, char *text, Rectangle boundaries, bool should_use_bg2); /* Draws a box with text for a message */
+void DrawTextInBounds(CchatUiConf *conf, char *text, Rectangle boundaries); /* Draw text with line wrapping on characters. TODO: line wrapping on words*/
+void DrawInputField(CchatUiConf *conf, connection *p); /* Draws input field and handles sending messages through the connection */
