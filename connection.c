@@ -68,8 +68,7 @@ void *tcp_read_messages(void *conn_p) {
         read_count = tcp_read(conn->serverfd, buf, BUFSIZE);
 
         buf[read_count - 1] = '\0'; // -1 to remove newline
-        message *new_message = parse_message(buf);
-        insert_message(conn->messages, new_message, conn->messages_len);
+        insert_message(conn->messages, parse_message(buf), conn->messages_len);
 
         if (read_count < 0)
             return (void*)read_count;
@@ -91,14 +90,14 @@ message *parse_message(char *msg) {
         char *text = strdup(strtok(NULL, "\0"));
         
         ret->sender = "SERVER";
-        ret->text = text;
+        ret->text = ++text;
     } else if (strcmp("CONNECT", type) == 0) {
         ret->type = CONNECT;
 
         char *text = strdup(strtok(NULL, "\0"));
         
         ret->sender = "SERVER";
-        ret->text = text;
+        ret->text = ++text;
     } else if (strcmp("SEND", type) == 0) {
         ret->type = RECEIVE;
 
@@ -113,7 +112,7 @@ message *parse_message(char *msg) {
         char *text = strdup(strtok(NULL, "\0"));
         
         ret->sender = "SERVER";
-        ret->text = text;
+        ret->text = ++text;
     } else {
         fprintf(stderr, "%s:%d Invalid message type: %s\n", __FILE__, __LINE__, type);
         free(iter);

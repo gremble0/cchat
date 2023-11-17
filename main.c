@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
 
     CchatUiConf conf = {
         .font = LoadFontEx("./assets/Cantarell-Regular.ttf", 25, NULL, 0),
-        .bg1 = GetColor(0x151515ff), // TODO delete these macros
+        .bg1 = GetColor(0x151515ff),
         .bg2 = GetColor(0x191919ff),
         .bg3 = GetColor(0x1c1c1cff),
         .accent_color = GetColor(0xe1b655ff),

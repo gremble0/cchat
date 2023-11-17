@@ -37,9 +37,12 @@ void DrawWindow(CchatUiConf *conf, connection *conn) {
 }
 
 void DrawChatBox(CchatUiConf *conf, message *msg, Rectangle boundaries, bool should_use_bg2) {
-    DrawRectangle(boundaries.x, boundaries.y, boundaries.width, boundaries.height, should_use_bg2 ? conf->bg2 : conf->bg1);
+    // Draw box around message
+    DrawRectangleRec(boundaries, should_use_bg2 ? conf->bg2 : conf->bg1);
 
+    // Draw "msg->sender: msg->text"
     DrawTextInBounds(conf->font, msg->sender, &boundaries, conf->font.baseSize, conf->accent_color);
+    DrawTextInBounds(conf->font, ": ", NULL, conf->font.baseSize, conf->accent_color);
     DrawTextInBounds(conf->font, msg->text, NULL, conf->font.baseSize, conf->font_color);
 }
 
@@ -52,7 +55,6 @@ void DrawInputField(CchatUiConf *conf, connection *conn) {
     };
 
     int key = GetCharPressed();
-
     while (key > 0 && conn->write_buf_len < BUFSIZE + 1) {
         conn->write_buf[conn->write_buf_len] = (char)key;
         conn->write_buf[conn->write_buf_len + 1] = '\0';
@@ -61,15 +63,13 @@ void DrawInputField(CchatUiConf *conf, connection *conn) {
         key = GetCharPressed();
     }
 
-    if (IsKeyPressed(KEY_BACKSPACE) && conn->write_buf_len != 0) {
-        --conn->write_buf_len;
-        conn->write_buf[conn->write_buf_len] = '\0';
-    }
+    if (IsKeyPressed(KEY_BACKSPACE) && conn->write_buf_len != 0)
+        conn->write_buf[conn->write_buf_len--] = '\0';
 
     if (IsKeyPressed(KEY_ENTER) && conn->write_buf_len != 0) {
         message *new_message = (message*)malloc(sizeof(message*));
         new_message->type = SEND;
-        new_message->sender = "ME: "; // TODO: get clients username, assigning .sender otherwise unnecessary
+        new_message->sender = "ME"; // TODO: get clients username, assigning .sender otherwise unnecessary
         new_message->text = (char*)malloc(BUFSIZE);
 
         memcpy(new_message->text, conn->write_buf, BUFSIZE);
@@ -106,6 +106,7 @@ void DrawTextInBounds(Font font, char *text, Rectangle *boundaries, float fontSi
             draw_pos.x = prev_boundaries.x;
             draw_pos.y += fontSize;
         }
+
         DrawTextCodepoint(font, text[i], draw_pos, fontSize, tint);
         draw_pos.x += GetGlyphInfo(font, text[i]).advanceX;
     }
